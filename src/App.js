@@ -1,5 +1,5 @@
 import React from "react";
-import { layer, Map as OLMap, Layers } from "react-openlayers";
+// import { layer, Map as OLMap, Layers } from "react-openlayers";
 import "./App.css";
 import Menu from "./components/menu/Menu";
 import GoogleMap from "./components/ggmap/GoogleMap";
