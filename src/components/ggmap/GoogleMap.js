@@ -8,16 +8,19 @@ import { transform } from "ol/proj.js";
 import { Tile as TileLayer } from "ol/layer.js";
 import XYZ from "ol/source/XYZ";
 import Draw from "ol/interaction/Draw";
-import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
-import { Stroke, Style } from "ol/style";
+import { vectorLayer } from "../utils/vector";
 import "./GoogleMap.css";
+import { drawEndEvent, pointerMoveEvent } from "../utils/addInteractions";
+
+let mapData = null;
 
 const GoogleMap = () => {
   const [drawEnabled, setDrawEnabled] = useState(false);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
   const overlayRef = useRef(null);
+
+  mapData = mapRef.current;
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -32,6 +35,7 @@ const GoogleMap = () => {
               url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
             }),
           }),
+          vectorLayer,
         ],
         target: "map",
         view: new View({
@@ -45,61 +49,27 @@ const GoogleMap = () => {
       });
 
       // Create an overlay to display the length of the drawn line
-      const overlayElement = document.createElement("div");
-      overlayElement.className = "overlay";
-      const overlay = new Overlay({
-        element: overlayElement,
+      const tooltipElement = document.createElement("div");
+      tooltipElement.className = "overlay";
+      const tooltipLayer = new Overlay({
+        element: tooltipElement,
         positioning: "bottom-center",
       });
-      map.addOverlay(overlay);
-      overlayRef.current = overlay;
-
+      map.addOverlay(tooltipLayer);
+      overlayRef.current = tooltipLayer;
       mapRef.current = map;
-      // Create a vector layer to display the drawn features
-      const vectorLayer = new VectorLayer({
-        source: new VectorSource(),
-        style: new Style({
-          stroke: new Stroke({
-            color: "#ff0000",
-            width: 2,
-          }),
-        }),
-      });
-      // Add the vector layer to the map
-      map.addLayer(vectorLayer);
+
       // Create a Draw interaction to draw lines on the map
       const draw = new Draw({
         type: "LineString",
         source: vectorLayer.getSource(),
       });
-      // Listen for the drawend event to calculate the length of the drawn line
-      draw.on("drawend", (event) => {
-        const feature = event.feature;
-        const geometry = feature.getGeometry();
-        const lengthInMeters = geometry.getLength();
-        console.log(`Length of drawn line: ${lengthInMeters} meters`);
-      });
       drawRef.current = draw;
 
+      // Listen for the drawend event to calculate the length of the drawn line
+      drawEndEvent(draw)
       // Listen for pointermove events on the map to display the length of the drawn line
-      map.on("pointermove", (event) => {
-        if (event.dragging) {
-          return;
-        }
-        const pixel = map.getEventPixel(event.originalEvent);
-        const feature = map.forEachFeatureAtPixel(pixel, (feature) => feature);
-        if (feature) {
-          const geometry = feature.getGeometry();
-          if (geometry.getType() === "LineString") {
-            const lengthInMeters = geometry.getLength();
-            const lengthInKilometers = lengthInMeters / 1000;
-            overlayElement.innerHTML = `${lengthInKilometers.toFixed(2)} km`;
-            overlay.setPosition(event.coordinate);
-          }
-        } else {
-          overlay.setPosition(undefined);
-        }
-      });
+      pointerMoveEvent(map, tooltipElement, tooltipLayer);
     }
   }, []);
 
@@ -137,5 +107,5 @@ const GoogleMap = () => {
     </>
   );
 };
-
-export default GoogleMap;
+console.log(mapData);
+export { GoogleMap, mapData };
