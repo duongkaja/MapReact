@@ -5,28 +5,25 @@ import OLGoogleMaps from "olgm/OLGoogleMaps.js";
 import GoogleLayer from "olgm/layer/Google.js";
 import { defaults as defaultInteractions } from "olgm/interaction.js";
 import { transform } from "ol/proj.js";
-import { OSM, Vector as VectorSource } from "ol/source.js";
+import { Vector as VectorSource } from "ol/source.js";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
 import { Draw, Modify, Snap } from "ol/interaction.js";
-
+import XYZ from "ol/source/XYZ";
 const GoogleMap = () => {
   const mapRef = useRef(null);
 
   useEffect(() => {
     if (!mapRef.current) {
-      const osmSource = new OSM({
-        attributions: [], // Clear default attributions
-      });
-
       const map = new Map({
-        // use OL3-Google-Maps recommended default interactions
         interactions: defaultInteractions({
           altShiftDragRotate: false,
           pinchRotate: false,
         }),
         layers: [
           new TileLayer({
-            source: osmSource, //*  An OpenStreetMap layer providing the base map tiles
+            source: new XYZ({
+              url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+            }),
           }),
         ],
         target: "map",
@@ -46,7 +43,6 @@ const GoogleMap = () => {
 
   return (
     <div id="map" style={{ height: "100vh", width: "80vw" }}>
-      {/* Add custom CSS to hide the zoom buttons and rotate reset button */}
       <style>
         {`
           .ol-zoom, .ol-rotate-reset {
