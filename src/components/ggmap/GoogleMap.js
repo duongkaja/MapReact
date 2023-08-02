@@ -5,12 +5,10 @@ import View from "ol/View.js";
 import Overlay from "ol/Overlay.js";
 import { defaults as defaultInteractions } from "olgm/interaction.js";
 import { transform } from "ol/proj.js";
-import { Tile as TileLayer } from "ol/layer.js";
-import XYZ from "ol/source/XYZ";
 import Draw from "ol/interaction/Draw";
-import { vectorLayer } from "../utils/vector";
 import "./GoogleMap.css";
 import { drawEndEvent, pointerMoveEvent } from "../utils/addInteractions";
+import { mapLayer, vectorLayer } from "../utils/layer";
 
 let mapData = null;
 
@@ -23,6 +21,14 @@ const GoogleMap = () => {
   mapData = mapRef.current;
 
   useEffect(() => {
+    const tooltipElement = document.createElement("div");
+    tooltipElement.className = "overlay";
+
+    const tooltipLayer = new Overlay({
+      element: tooltipElement,
+      positioning: "bottom-center",
+    });
+
     if (!mapRef.current) {
       const map = new Map({
         interactions: defaultInteractions({
@@ -30,11 +36,7 @@ const GoogleMap = () => {
           pinchRotate: false,
         }),
         layers: [
-          new TileLayer({
-            source: new XYZ({
-              url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-            }),
-          }),
+          mapLayer,
           vectorLayer,
         ],
         target: "map",
@@ -49,12 +51,7 @@ const GoogleMap = () => {
       });
 
       // Create an overlay to display the length of the drawn line
-      const tooltipElement = document.createElement("div");
-      tooltipElement.className = "overlay";
-      const tooltipLayer = new Overlay({
-        element: tooltipElement,
-        positioning: "bottom-center",
-      });
+
       map.addOverlay(tooltipLayer);
       overlayRef.current = tooltipLayer;
       mapRef.current = map;
@@ -67,7 +64,7 @@ const GoogleMap = () => {
       drawRef.current = draw;
 
       // Listen for the drawend event to calculate the length of the drawn line
-      drawEndEvent(draw)
+      drawEndEvent(draw);
       // Listen for pointermove events on the map to display the length of the drawn line
       pointerMoveEvent(map, tooltipElement, tooltipLayer);
     }
