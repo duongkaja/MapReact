@@ -14,10 +14,16 @@ const GoogleMap = () => {
 
   useEffect(() => {
     if (!mapRef.current) {
-      const osmSource = new OSM();
+      const osmSource = new OSM({
+        attributions: [], // Clear default attributions
+      });
+
       const map = new Map({
         // use OL3-Google-Maps recommended default interactions
-        interactions: defaultInteractions(),
+        interactions: defaultInteractions({
+          altShiftDragRotate: false,
+          pinchRotate: false,
+        }),
         layers: [
           new TileLayer({
             source: osmSource, //*  An OpenStreetMap layer providing the base map tiles
@@ -38,7 +44,18 @@ const GoogleMap = () => {
     }
   }, []);
 
-  return <div id="map" style={{ height: "100vh", width: "80vw" }} />;
+  return (
+    <div id="map" style={{ height: "100vh", width: "80vw" }}>
+      {/* Add custom CSS to hide the zoom buttons and rotate reset button */}
+      <style>
+        {`
+          .ol-zoom, .ol-rotate-reset {
+            display: none !important;
+          }
+        `}
+      </style>
+    </div>
+  );
 };
 
 export default GoogleMap;
