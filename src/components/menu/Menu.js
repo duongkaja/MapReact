@@ -5,7 +5,7 @@ const { SubMenu } = Menu;
 
 function App() {
   return (
-    <Menu mode="inline" style={{ width: 256 }}>
+    <Menu mode="inline" style={{ width: 310 }}>
       <SubMenu key="sub1" title="Chọn vệ tinh">
         <Menu.Item key="1">Lựa chọn 1</Menu.Item>
         <Menu.Item key="2">Lựa chọn 2</Menu.Item>

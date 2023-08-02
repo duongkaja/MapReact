@@ -37,7 +37,7 @@ function MapWrapper(props) {
     <div
       ref={mapElement}
       className="map-container"
-      style={{ height: "100vh", width: "80vw" }}
+      style={{ height: "100vh", width: "90vw" }}
     ></div>
   );
 }
