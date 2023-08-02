@@ -7,8 +7,8 @@ import { defaults as defaultInteractions } from "olgm/interaction.js";
 import { transform } from "ol/proj.js";
 import Draw from "ol/interaction/Draw";
 import "./GoogleMap.css";
-import { drawEndEvent, pointerMoveEvent } from "../utils/addInteractions";
-import { mapLayer, vectorLayer } from "../utils/layer";
+import { drawEndEvent, pointerMoveEvent } from "../utils/Interactions";
+import { mapLayer, vectorLayer } from "../utils/Layers";
 
 let mapData = null;
 
