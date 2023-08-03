@@ -1,4 +1,4 @@
-.menu {
+/* .menu {
     width: 100%;
     position: absolute;
     top: 0;
@@ -7,7 +7,140 @@
     z-index: 1;
   }
   
-  #map {
+    */
+    .menu {
+  display: flex;
+  flex-direction: row;
+}
+
+    .map {
+        display: flex;
+      justify-content: center;
+    }
+    .ant-layout-sider-children {
+      height: 100vh !important;
+      background-color: var(--white);
+}
+
+.ant-layout-header  {
+    width: 100% !important;
+    padding: 0 !important;
+    background-color: var(--white);
+}
+
+/* Sidebar */
+.ant-layout-sider.ant-layout-sider-dark.sidebar {
+    position: sticky;
+    top: 0;
+}
+
+.sidebar {
+    height: 100vh;
+}
+
+.ant-layout {
     position: relative;
+}
+
+.logo-primary {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.site-layout-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.site-layout-info-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 16px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top: 2px;
+}
+
+.site-layout-info-mobile h4 {
+    margin-left: 6px;
+}
+
+.site-layout-info h4 {
+    margin-left: 6px;
+}
+
+.text-welcome {
+    display: flex;
+    justify-content: center;
+}
+
+.header-top {
+    /* position: relative; */
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 99;
+    /* box-shadow: 0 4px 2px -2px #ccc; */
+}
+
+.trigger {
+    position: fixed;
+    top: 10px;
+}
+
+/* Custom menu icon  */
+.custom-menu-icon {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-top: 22px;
+    margin-left: 22px;
+}
+
+/* Logo */
+.primary-logo {
+    width: 100%;
+    object-fit: cover;
+}
+.select-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
   }
   
+  @media (max-width: 991px) {
+    .select-container {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      margin-top: 20px;
+      width: 200px;
+      margin-left: 10px;
+
+    }
+  }
+  @media (max-width: 991px) {
+    .login-select {
+      margin-left: 10px;
+      top: -3px;
+    }
+  }
+  
+  .site-layout-info-mobile {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+  }
+  
+  
+
+.w-100 {
+    width: 400px;
+}

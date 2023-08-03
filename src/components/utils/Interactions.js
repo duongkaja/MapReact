@@ -1,4 +1,4 @@
-import { mapLayer, vectorLayer } from "../utils/Layers";
+import { vectorLayer } from "../utils/Layers";
 import Draw from "ol/interaction/Draw";
 
 export const pointerMoveEvent = (map, overlayElement, overlay) => {
