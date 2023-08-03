@@ -27,6 +27,16 @@ const GoogleMap = () => {
   const onClose = () => {
     setOpen(false);
   };
+  const [mapWidth, setMapWidth] = useState("81.9vw");
+
+  useEffect(() => {
+    if (collapsed) {
+      setMapWidth("100vw");
+    } else {
+      setMapWidth("81.9vw");
+    }
+  }, [collapsed]);
+
   const [drawEnabled, setDrawEnabled] = useState(false);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
@@ -171,7 +181,7 @@ const GoogleMap = () => {
             <div
               className="map"
               id="map"
-              style={{ height: "91vh", width: "81.9vw" }}
+              style={{ height: "89.9vh", width: mapWidth }}
             ></div>
           </Content>
         </Layout>
