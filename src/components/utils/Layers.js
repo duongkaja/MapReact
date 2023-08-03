@@ -3,6 +3,10 @@ import XYZ from "ol/source/XYZ";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 import { Stroke, Style } from "ol/style";
+import Overlay from "ol/Overlay.js";
+
+const tooltipElement = document.createElement("div");
+tooltipElement.className = "overlay";
 
 export const mapLayer = new TileLayer({
   source: new XYZ({
@@ -18,4 +22,9 @@ export const vectorLayer = new VectorLayer({
       width: 4,
     }),
   }),
+});
+
+export const tooltipLayer = new Overlay({
+  element: tooltipElement,
+  positioning: "bottom-center",
 });

@@ -1,72 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Menu } from "antd";
+import { Dropdown, Menu, Space } from "antd";
 import Map from "ol/Map.js";
-import View from "ol/View.js";
-import Overlay from "ol/Overlay.js";
-import { defaults as defaultInteractions } from "olgm/interaction.js";
-import { transform } from "ol/proj.js";
-import Draw from "ol/interaction/Draw";
 import "./GoogleMap.css";
-import { drawEndEvent, pointerMoveEvent } from "../utils/Interactions";
+import { createDrawType, drawEndEvent } from "../utils/Interactions";
 import { mapLayer, vectorLayer } from "../utils/Layers";
-
-let mapData = null;
+import { DownOutlined } from "@ant-design/icons";
+import { view } from "../utils/view";
 
 const GoogleMap = () => {
   const [drawEnabled, setDrawEnabled] = useState(false);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
-  const overlayRef = useRef(null);
-
-  mapData = mapRef.current;
 
   useEffect(() => {
-    const tooltipElement = document.createElement("div");
-    tooltipElement.className = "overlay";
-
-    const tooltipLayer = new Overlay({
-      element: tooltipElement,
-      positioning: "bottom-center",
-    });
-
     if (!mapRef.current) {
       const map = new Map({
-        interactions: defaultInteractions({
-          altShiftDragRotate: false,
-          pinchRotate: false,
-        }),
-        layers: [
-          mapLayer,
-          vectorLayer,
-        ],
+        layers: [mapLayer, vectorLayer],
         target: "map",
-        view: new View({
-          center: transform(
-            [107.84641987555096, 15.557018118480753],
-            "EPSG:4326",
-            "EPSG:3857"
-          ),
-          zoom: 5.8,
-        }),
+        view: view,
       });
-
-      // Create an overlay to display the length of the drawn line
-
-      map.addOverlay(tooltipLayer);
-      overlayRef.current = tooltipLayer;
       mapRef.current = map;
 
-      // Create a Draw interaction to draw lines on the map
-      const draw = new Draw({
-        type: "LineString",
-        source: vectorLayer.getSource(),
-      });
+      // Create a Draw type interaction to draw lines on the map
+      const draw = createDrawType("LineString");
       drawRef.current = draw;
 
       // Listen for the drawend event to calculate the length of the drawn line
       drawEndEvent(draw);
-      // Listen for pointermove events on the map to display the length of the drawn line
-      pointerMoveEvent(map, tooltipElement, tooltipLayer);
     }
   }, []);
 
@@ -78,31 +38,47 @@ const GoogleMap = () => {
     }
   }, [drawEnabled]);
 
+  const items = [
+    {
+      label: <a href="!#">{`Length, LineString`}</a>,
+      key: "0",
+    },
+    {
+      label: <a href="!#">{`Area (Polygon)`}</a>,
+      key: "1",
+    },
+    {
+      label: <a href="!#">{`Point`}</a>,
+      key: "2",
+    },
+  ];
+
   return (
     <>
       <div id="map" style={{ height: "100vh", width: "100vw" }}>
-        <style>
-          {`
-            .ol-zoom, .ol-rotate-reset {
-              display: none !important;
-            }
-            
-            .overlay {
-              background-color: white;
-              border-radius: 4px;
-              padding: 4px 8px;
-              opacity: 0.8;
-            }
-          `}
-        </style>
         <Menu mode="horizontal" className="menu">
-          <Menu.Item key="draw" onClick={() => setDrawEnabled(!drawEnabled)}>
+          <Menu.Item key="1" onClick={() => setDrawEnabled(!drawEnabled)}>
             {drawEnabled ? "Hủy vẽ" : "Nhấp để vẽ"}
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Dropdown
+              menu={{
+                items,
+              }}
+              trigger={["click"]}
+            >
+              <a href="!#" onClick={(e) => e.preventDefault()}>
+                <Space>
+                  Công cụ
+                  <DownOutlined />
+                </Space>
+              </a>
+            </Dropdown>
           </Menu.Item>
         </Menu>
       </div>
     </>
   );
 };
-console.log(mapData);
-export { GoogleMap, mapData };
+
+export { GoogleMap };

@@ -1,3 +1,6 @@
+import { mapLayer, vectorLayer } from "../utils/Layers";
+import Draw from "ol/interaction/Draw";
+
 export const pointerMoveEvent = (map, overlayElement, overlay) => {
   map.on("pointermove", (event) => {
     if (event.dragging) {
@@ -17,6 +20,14 @@ export const pointerMoveEvent = (map, overlayElement, overlay) => {
       overlay.setPosition(undefined);
     }
   });
+};
+
+export const createDrawType = (drawType) => {
+  const draw = new Draw({
+    type: drawType,
+    source: vectorLayer.getSource(),
+  });
+  return draw;
 };
 
 export const drawEndEvent = (draw) => {
