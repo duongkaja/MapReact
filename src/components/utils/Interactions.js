@@ -1,3 +1,4 @@
+//Interactions.js
 export const pointerMoveEvent = (map, overlayElement, overlay) => {
   map.on("pointermove", (event) => {
     if (event.dragging) {
@@ -18,7 +19,6 @@ export const pointerMoveEvent = (map, overlayElement, overlay) => {
     }
   });
 };
-
 export const drawEndEvent = (draw) => {
   draw.on("drawend", (event) => {
     const feature = event.feature;
