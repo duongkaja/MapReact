@@ -1,23 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Layout, Menu, Space, Button, Col, Row, Tabs } from "antd";
+import {
+  Button,
+  Dropdown,
+  Layout,
+  Menu,
+  Space,
+  Col,
+  Row,
+  Tabs,
+  Drawer,
+} from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import "./GoogleMap.css";
 import { primaryLogo } from "../../asset/images";
 import Map from "ol/Map.js";
-import {
-  EditDrawLine,
-  createDrawType,
-  drawEndEvent,
-  drawStartEvent,
-} from "../utils/Interactions";
+import { EditDrawLine, createDrawType } from "../utils/Interactions";
 import { mapLayer, vectorLayer } from "../utils/Layers";
 import { view } from "../utils/view";
 import { useMediaQuery } from "react-responsive";
-const { Header, Content, Sider } = Layout;
 import { LineString, Polygon } from "ol/geom.js";
 import Overlay from "ol/Overlay.js";
 import { unByKey } from "ol/Observable.js";
@@ -31,15 +36,10 @@ let measureTooltipElement; // The measure tooltip element.
 let measureTooltip; // Overlay to show the measurement.
 const continuePolygonMsg = "Nhấn để tiếp tục vẽ đa giác"; // Message to show when the user is drawing a polygon.
 const continueLineMsg = "Nhấn để tiếp tục vẽ"; // Message to show when the user is drawing a line.
-/**
- * Handle pointer move.
- * @param {import("../src/ol/MapBrowserEvent").default} evt The event.
- */
 const pointerMoveHandler = function (evt) {
   if (evt.dragging) {
     return;
   }
-  /** @type {string} */
   let helpMsg = "Nhấn để bắt đầu vẽ";
 
   if (sketch) {
@@ -64,6 +64,15 @@ const GoogleMap = () => {
   const [drawType, setDrawType] = useState("LineString");
   const mapRef = useRef(null);
   const drawRef = useRef(null);
+  const { Header, Content, Sider } = Layout;
+  const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+    setCollapsed(false);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -232,8 +241,6 @@ const GoogleMap = () => {
     },
   ];
 
-
-
   const removeInteraction = () => {
     mapRef.current.removeInteraction(drawRef.current);
   };
@@ -259,13 +266,33 @@ const GoogleMap = () => {
                 alt="logo-awater"
               />
             )}
-
             <Tabs defaultActiveKey="1" items={tabiItems} />
           </Sider>
         )}
         <Layout className="site-layout">
           <Header className="header-top position-relative">
             <Row>
+              {isTabletOrMobile && (
+                <Col>
+                  <MenuOutlined
+                    onClick={showDrawer}
+                    className="custom-menu-icon"
+                    style={{ fontSize: 20 }}
+                  />
+                  {/* show option menu */}
+                  <Drawer
+                    placement="left"
+                    width={400}
+                    onClose={onClose}
+                    open={open}
+                  >
+                    {/* <SidebarMenu
+                      onCloseDrawer={onClose}
+                      isTabletOrMobile={isTabletOrMobile}
+                    /> */}
+                  </Drawer>
+                </Col>
+              )}
               {!isTabletOrMobile && (
                 <Col>
                   <Button
@@ -283,32 +310,39 @@ const GoogleMap = () => {
                 </Col>
               )}
               <Col>
-                <Menu
-                  className="menu"
-                  mode="horizontal"
-                  style={{ width: "100%" }}
-                >
+                <Menu mode="horizontal" className="menu">
                   <Menu.Item
                     key="1"
                     onClick={() => setDrawEnabled(!drawEnabled)}
                   >
-                    {drawEnabled ? "Hủy vẽ" : "Nhấp để vẽ"}
+                    {drawEnabled ? (
+                      <Button
+                        icon={<HighlightOutlined />}
+                        style={{ color: "#1677FF" }}
+                        onClick={() => {
+                          mapRef.current.un("pointermove", pointerMoveHandler);
+                          removeInteraction();
+                        }}
+                      >
+                        Hủy vẽ
+                      </Button>
+                    ) : (
+                      <Button icon={<HighlightOutlined />}>Vẽ</Button>
+                    )}
                   </Menu.Item>
-                  <Menu.Item key="2">
-                    <Dropdown
-                      menu={{
-                        items,
-                      }}
-                      trigger={["click"]}
-                    >
-                      <a href="!#" onClick={(e) => e.preventDefault()}>
-                        <Space>
-                          Công cụ
-                          <DownOutlined />
-                        </Space>
-                      </a>
-                    </Dropdown>
-                  </Menu.Item>
+                  <Dropdown
+                    menu={{
+                      items,
+                    }}
+                    trigger={["click"]}
+                  >
+                    <a href="!#" onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        Công cụ
+                        <DownOutlined />
+                      </Space>
+                    </a>
+                  </Dropdown>
                 </Menu>
               </Col>
             </Row>
