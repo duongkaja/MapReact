@@ -2,7 +2,7 @@ import { Tile as TileLayer } from "ol/layer.js";
 import XYZ from "ol/source/XYZ";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
-import { Stroke, Style } from "ol/style";
+import { Stroke, Style, Fill } from "ol/style";
 import Overlay from "ol/Overlay.js";
 
 const tooltipElement = document.createElement("div");
@@ -16,12 +16,13 @@ export const mapLayer = new TileLayer({
 
 export const vectorLayer = new VectorLayer({
   source: new VectorSource(),
-  style: new Style({
-    stroke: new Stroke({
-      color: "#ff0000",
-      width: 4,
-    }),
-  }),
+  style: {
+    "fill-color": "rgba(255, 255, 255, 0.2)",
+    "stroke-color": "#FF1616",
+    "stroke-width": 2,
+    "circle-radius": 7,
+    "circle-fill-color": "#1677FF",
+  },
 });
 
 export const tooltipLayer = new Overlay({
