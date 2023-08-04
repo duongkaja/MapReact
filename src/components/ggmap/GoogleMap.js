@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Dropdown, Layout, Menu, Space, Button, Drawer, Col, Row } from "antd";
+import { Dropdown, Layout, Menu, Space, Button, Col, Row, Tabs } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
-  MenuOutlined,
 } from "@ant-design/icons";
 import "./GoogleMap.css";
 import { primaryLogo } from "../../asset/images";
@@ -14,29 +13,10 @@ import { mapLayer, vectorLayer } from "../utils/Layers";
 import { view } from "../utils/view";
 import { useMediaQuery } from "react-responsive";
 const { Header, Content, Sider } = Layout;
+
 const GoogleMap = () => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 991px)" });
-  const [open, setOpen] = useState(false);
-  const showDrawer = () => {
-    setOpen(true);
-    setCollapsed(false);
-  };
-  // const [placement, setPlacement] = useState("left");
-  const [placement] = useState("left");
   const [collapsed, setCollapsed] = useState(false);
-  const onClose = () => {
-    setOpen(false);
-  };
-  const [mapWidth, setMapWidth] = useState("81.9vw");
-
-  useEffect(() => {
-    if (collapsed) {
-      setMapWidth("100vw");
-    } else {
-      setMapWidth("81.9vw");
-    }
-  }, [collapsed]);
-
   const [drawEnabled, setDrawEnabled] = useState(false);
   const mapRef = useRef(null);
   const drawRef = useRef(null);
@@ -82,16 +62,40 @@ const GoogleMap = () => {
     },
   ];
 
+  const tabiItems = [
+    {
+      key: "1",
+      label: `Lớp bản đồ`,
+      children: `Content of Tab Pane 1`,
+    },
+    {
+      key: "2",
+      label: `Chú giải`,
+      children: `Content of Tab Pane 2`,
+    },
+    {
+      key: "3",
+      label: `Thuộc tính`,
+      children: `Content of Tab Pane 3`,
+    },
+    {
+      key: "4",
+      label: `Kết quả`,
+      children: `Content of Tab Pane 4`,
+    },
+  ];
+
   return (
     <>
       <Layout>
         {/* Screen tablet */}
         {!isTabletOrMobile && (
           <Sider
+            theme="light"
             trigger={null}
             collapsible
             collapsed={collapsed}
-            width={270}
+            width={298}
             className="sidebar"
           >
             {!collapsed && (
@@ -101,35 +105,13 @@ const GoogleMap = () => {
                 alt="logo-awater"
               />
             )}
-            {/* 
-              <SidebarMenu /> */}
+
+            <Tabs defaultActiveKey="1" items={tabiItems} />
           </Sider>
         )}
         <Layout className="site-layout">
           <Header className="header-top position-relative">
             <Row>
-              {isTabletOrMobile && (
-                <Col>
-                  <MenuOutlined
-                    onClick={showDrawer}
-                    className="custom-menu-icon"
-                  />
-
-                  {/* show option menu */}
-                  <Drawer
-                    placement={placement}
-                    width={400}
-                    onClose={onClose}
-                    open={open}
-                  >
-                    {/* <SidebarMenu
-                      onCloseDrawer={onClose}
-                      isTabletOrMobile={isTabletOrMobile}
-                    /> */}
-                  </Drawer>
-                </Col>
-              )}
-
               {!isTabletOrMobile && (
                 <Col>
                   <Button
@@ -181,7 +163,7 @@ const GoogleMap = () => {
             <div
               className="map"
               id="map"
-              style={{ height: "89.9vh", width: mapWidth }}
+              style={{ height: "calc(100vh - 64px)" }}
             ></div>
           </Content>
         </Layout>

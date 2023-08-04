@@ -114,3 +114,7 @@ top: 60px;
 .w-100 {
 width: 400px;
 }
+
+.ant-tabs-tab+.ant-tabs-tab {
+    margin: 0 0 0 16px!important;
+}
