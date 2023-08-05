@@ -1,6 +1,5 @@
 import { getArea, getLength } from "ol/sphere.js";
 
-
 /**
  * Format length output.
  * @param {LineString} line The line.

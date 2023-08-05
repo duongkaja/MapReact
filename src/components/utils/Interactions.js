@@ -103,10 +103,3 @@ export const createMeasureTooltip = (map) => {
   });
   map.addOverlay(measureTooltip);
 }
-
-
-export const Interactions = () => {
-  return (
-    <div>Interactions</div>
-  )
-}

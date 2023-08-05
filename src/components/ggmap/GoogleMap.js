@@ -52,19 +52,15 @@ const GoogleMap = () => {
      *! default drawType is lineString
      */
     if (drawEnabled) {
-      // mapRef.current.on("pointermove", pointerMoveHandler);
       // Create a Draw type interaction to draw lines on the map
       const draw = createDrawType(drawType);
       drawRef.current = draw;
 
-      const map = mapRef.current;
-      createMeasureTooltip(map);
+      createMeasureTooltip(mapRef.current);
 
       // Listen for the draw event to calculate the length of the drawn line
       drawStartEvent(draw);
-      drawEndEvent(draw, map);
-
-      console.log(`init map with draw ${drawType}`);
+      drawEndEvent(draw, mapRef.current);
     }
   }, [drawType, drawEnabled]);
 
@@ -74,7 +70,6 @@ const GoogleMap = () => {
     if (drawEnabled) {
       mapRef.current.addInteraction(drawRef.current);
       mapRef.current.addInteraction(modify);
-      console.log("draw enabled true");
     }
   }, [drawEnabled, drawType]);
 
@@ -159,6 +154,7 @@ const GoogleMap = () => {
         break;
     }
   };
+
   const tabItems = [
     {
       key: "1",
