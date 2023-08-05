@@ -9,6 +9,7 @@ import {
   Row,
   Tabs,
   Drawer,
+  Tree,
 } from "antd";
 import {
   MenuFoldOutlined,
@@ -28,7 +29,7 @@ import Overlay from "ol/Overlay.js";
 import { unByKey } from "ol/Observable.js";
 import { formatArea, formatLength } from "../utils/utils";
 import { HighlightOutlined } from "@ant-design/icons";
-
+import XYZ from "ol/source/XYZ";
 let sketch; // Currently drawn feature. @type {import("../src/ol/Feature.js").default}
 let helpTooltipElement; // The help tooltip element.
 let helpTooltip; // Overlay to show the help messages.
@@ -182,6 +183,86 @@ const GoogleMap = () => {
     mapRef.current.addOverlay(measureTooltip);
   }
 
+  ///Lớp nền
+  const [baseLayer, setBaseLayer] = useState("google");
+  const BaseLayerTree = ({ treeData, onCheck }) => (
+    <Tree
+      checkable
+      defaultExpandedKeys={["0-0-0"]}
+      treeData={treeData}
+      onCheck={onCheck}
+    />
+  );
+  const handleBaseLayerChange = (checkedKeys, e) => {
+    // Lấy khóa của mục được chọn cuối cùng
+    const lastCheckedKey = checkedKeys[checkedKeys.length - 1];
+
+    // Xác định lớp nền mới dựa trên khóa của mục được chọn cuối cùng
+    let newBaseLayer;
+    switch (lastCheckedKey) {
+      case "0-0-1":
+        newBaseLayer = "hanhChinh";
+        break;
+      case "0-0-2":
+        newBaseLayer = "giaoThong";
+        break;
+      case "0-0-3":
+        newBaseLayer = "google";
+        break;
+      case "0-0-4":
+        newBaseLayer = "veTinh";
+        break;
+      case "0-0-5":
+        newBaseLayer = "khongNen";
+        break;
+      default:
+        newBaseLayer = baseLayer;
+    }
+
+    // Cập nhật lớp nền mới
+    setBaseLayer(newBaseLayer);
+
+    // Thay đổi nguồn của lớp bản đồ dựa trên lớp nền mới
+    switch (newBaseLayer) {
+      case "hanhChinh":
+        mapLayer.setSource(
+          new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      case "giaoThong":
+        mapLayer.setSource(
+          new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      case "google":
+        mapLayer.setSource(
+          new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      case "veTinh":
+        mapLayer.setSource(
+          new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      case "khongNen":
+        mapLayer.setSource(
+          new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  };
   const items = [
     {
       label: (
@@ -217,13 +298,45 @@ const GoogleMap = () => {
       key: "2",
     },
   ];
-
   const tabiItems = [
     {
       key: "1",
-      label: `Lớp bản đồ`,
-      children: `Content of Tab Pane 1`,
+      label: "Lớp bản đồ",
+      children: (
+        <BaseLayerTree
+          treeData={[
+            {
+              title: "Lớp nền",
+              key: "0-1",
+              children: [
+                {
+                  title: "Hành chính",
+                  key: "0-0-1",
+                },
+                {
+                  title: "Giao thông",
+                  key: "0-0-2",
+                },
+                {
+                  title: "Google",
+                  key: "0-0-3",
+                },
+                {
+                  title: "Vệ tinh",
+                  key: "0-0-4",
+                },
+                {
+                  title: "Không nền",
+                  key: "0-0-5",
+                },
+              ],
+            },
+          ]}
+          onCheck={handleBaseLayerChange}
+        />
+      ),
     },
+
     {
       key: "2",
       label: `Chú giải`,
