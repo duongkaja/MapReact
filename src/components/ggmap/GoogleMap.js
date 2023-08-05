@@ -215,6 +215,9 @@ const GoogleMap = () => {
       case "0-0-5":
         newBaseLayer = "khongNen";
         break;
+      case "0-0-6":
+        newBaseLayer = "DiaDanhGoogle";
+        break;
       default:
         newBaseLayer = baseLayer;
     }
@@ -227,21 +230,21 @@ const GoogleMap = () => {
       case "hanhChinh":
         mapLayer.setSource(
           new XYZ({
-            url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+            url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
           })
         );
         break;
       case "giaoThong":
         mapLayer.setSource(
           new XYZ({
-            url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
+            url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
           })
         );
         break;
       case "google":
         mapLayer.setSource(
           new XYZ({
-            url: "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
+            url: "http://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
           })
         );
         break;
@@ -256,6 +259,13 @@ const GoogleMap = () => {
         mapLayer.setSource(
           new XYZ({
             url: "https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}",
+          })
+        );
+        break;
+      case "DiaDanhGoogle":
+        mapLayer.setSource(
+          new XYZ({
+            url: "http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
           })
         );
         break;
@@ -328,6 +338,10 @@ const GoogleMap = () => {
                 {
                   title: "Không nền",
                   key: "0-0-5",
+                },
+                {
+                  title: "Bản đồ địa danh Google",
+                  key: "0-0-6",
                 },
               ],
             },
