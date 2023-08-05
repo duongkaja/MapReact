@@ -4,6 +4,13 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from "ol/style.js";
 import { LineString, Polygon } from "ol/geom.js";
 import { formatArea, formatLength } from "./utils";
 import { Modify } from "ol/interaction.js";
+import { unByKey } from "ol/Observable.js";
+import Overlay from "ol/Overlay.js";
+
+let listener;
+let sketch; // Currently drawn feature. @type {import("../src/ol/Feature.js").default}
+let measureTooltipElement; // The measure tooltip element.
+let measureTooltip; // Overlay to show the measurement.
 
 export const createDrawType = (drawType) => {
   const draw = new Draw({
@@ -40,16 +47,10 @@ export const createDrawType = (drawType) => {
  */
 export const EditDrawLine = (source) => {
   const modify = new Modify({ source: source });
-  return modify
+  return modify;
 };
 
-export const drawStartEvent = (
-  draw,
-  sketch,
-  measureTooltipElement,
-  measureTooltip,
-  listener
-) => {
+export const drawStartEvent = (draw) => {
   draw.on("drawstart", function (evt) {
     // set sketch
     sketch = evt.feature;
@@ -74,11 +75,38 @@ export const drawStartEvent = (
   });
 };
 
-export const drawEndEvent = (draw) => {
-  draw.on("drawend", (event) => {
-    const feature = event.feature;
-    const geometry = feature.getGeometry();
-    const lengthInMeters = geometry.getLength();
-    console.log(`Length of drawn line: ${lengthInMeters} meters`);
+export const drawEndEvent = (draw, map) => {
+  draw.on("drawend", function () {
+    measureTooltipElement.className = "ol-tooltip ol-tooltip-static";
+    measureTooltip.setOffset([0, -7]);
+    // unset sketch
+    sketch = null;
+    // unset tooltip so that a new one can be created
+    measureTooltipElement = null;
+    createMeasureTooltip(map);
+    unByKey(listener);
   });
 };
+
+export const createMeasureTooltip = (map) => {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement("div");
+  measureTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+  measureTooltip = new Overlay({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: "bottom-center",
+    stopEvent: false,
+    insertFirst: false,
+  });
+  map.addOverlay(measureTooltip);
+}
+
+
+export const Interactions = () => {
+  return (
+    <div>Interactions</div>
+  )
+}
